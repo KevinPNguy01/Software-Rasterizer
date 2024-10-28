@@ -1,5 +1,18 @@
 #include <Windows.h>
 
+struct Vec3 {
+    float buf[3];
+    Vec3(float x, float y, float z) : buf{x, y, z} {};
+
+    float& operator[](int i) {
+        return buf[i];
+    }
+
+    float operator[](int i) const {
+        return buf[i];
+    }
+};
+
 void RenderFrame(HWND hwnd, HDC hdcMem, int width, int height) {
     HDC hdcDest = GetDC(hwnd);
     // Update only necessary pixels in bits[] here
@@ -8,6 +21,10 @@ void RenderFrame(HWND hwnd, HDC hdcMem, int width, int height) {
     BitBlt(hdcDest, 0, 0, width, height, hdcMem, 0, 0, SRCCOPY);
 
     ReleaseDC(hwnd, hdcDest);
+}
+
+void RenderTriangle(void* bits) {
+
 }
 
 int main()
