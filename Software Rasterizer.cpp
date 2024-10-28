@@ -2,8 +2,8 @@
 #include <cmath>
 #include <iostream>
 
-const int screenWidth = 256;
-const int screenHeight = 256;
+const int screenWidth = 400;
+const int screenHeight = 400;
 
 struct Vec3 {
     float buf[3];
@@ -35,17 +35,29 @@ bool InsideTriangle(const Vec3& v0, const Vec3& v1, const Vec3& v2, const Vec3& 
         InsideHalfPlane(v2, v0, p);
 }
 
-void RenderTriangle(void* bits, const Vec3& v0, const Vec3& v1, const Vec3& v2) {
+COLORREF RGBtoBGR(COLORREF color) {
+    BYTE red = GetRValue(color);
+    BYTE green = GetGValue(color);
+    BYTE blue = GetBValue(color);
+
+    return RGB(blue, green, red);
+}
+
+void DrawTriangle(void* bits, const Vec3& v0, const Vec3& v1, const Vec3& v2, COLORREF color) {
     int width = ceil(screenWidth * (max(v0[0], max(v1[0], v2[0])) - min(v0[0], min(v1[0], v2[0]))));
     int height = ceil(screenHeight * (max(v0[1], max(v1[1], v2[1])) - min(v0[1], min(v1[1], v2[1]))));
-    
+
     for (int x = 0; x < width; ++x) {
         for (int y = 0; y < height; ++y) {
             if (InsideTriangle(v0, v1, v2, Vec3(((float)x + 0.5) / width, ((float)y + 0.5) / height, 0))) {
-                ((DWORD*)bits)[y * screenWidth + x] = RGB(0, 0, 255);
+                ((DWORD*)bits)[y * screenWidth + x] = RGBtoBGR(color);
             }
         }
     }
+}
+
+void DrawTriangle(void* bits, const Vec3& v0, const Vec3& v1, const Vec3& v2) {
+    DrawTriangle(bits, v0, v1, v2, RGB(255, 255, 255));
 }
 
 int main()
@@ -68,7 +80,7 @@ int main()
     HDC hdcMem = CreateCompatibleDC(hdcDest);
     SelectObject(hdcMem, hBitmap);
 
-    RenderTriangle(bits, Vec3(0, 0, 0), Vec3(1, 0.5, 0), Vec3(0.5, 1, 0));
+    DrawTriangle(bits, Vec3(0, 0, 0), Vec3(1, 0.5, 0), Vec3(0.5, 1, 0), RGB(0, 0, 255));
     while (1) {
         RenderFrame(hwnd, hdcMem);
     }
