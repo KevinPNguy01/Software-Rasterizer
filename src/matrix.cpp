@@ -20,6 +20,18 @@ float Vec4::operator[](int i) const {
     return buf[i];
 }
 
+void Mat4::mul(Mat4& dest, const Mat4& a, const Mat4& b) {
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            dest.buf[i][j] = 
+                a.buf[i][0] * b.buf[0][j] +
+                a.buf[i][1] * b.buf[1][j] +
+                a.buf[i][2] * b.buf[2][j] +
+                a.buf[i][3] * b.buf[3][j];
+        }
+    }
+}
+
 Mat4::Mat4(float m00, float m01, float m02, float m03,
     float m10, float m11, float m12, float m13,
     float m20, float m21, float m22, float m23,

@@ -21,6 +21,8 @@ struct Vec4 {
 };
 
 struct Mat4 {
+    static void mul(Mat4& dest, const Mat4& a, const Mat4& b);
+
     float buf[4][4];
 
     Mat4(float m00, float m01, float m02, float m03,
