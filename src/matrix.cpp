@@ -10,6 +10,16 @@ float Vec3::operator[](int i) const {
     return buf[i];
 }
 
+Vec4::Vec4(float x, float y, float z, float w) : buf{ x, y, z, w} {}
+
+float& Vec4::operator[](int i) {
+    return buf[i];
+}
+
+float Vec4::operator[](int i) const {
+    return buf[i];
+}
+
 Mat4::Mat4(float m00, float m01, float m02, float m03,
     float m10, float m11, float m12, float m13,
     float m20, float m21, float m22, float m23,

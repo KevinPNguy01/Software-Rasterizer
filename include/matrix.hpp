@@ -10,6 +10,16 @@ struct Vec3 {
     float operator[](int i) const;
 };
 
+struct Vec4 {
+    float buf[4];
+
+    Vec4(float x, float y, float z, float w);
+
+    float& operator[](int i);
+
+    float operator[](int i) const;
+};
+
 struct Mat4 {
     float buf[4][4];
 
