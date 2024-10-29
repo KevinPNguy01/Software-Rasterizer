@@ -1,38 +1,15 @@
 #include <Windows.h>
 #include <cmath>
 #include <iostream>
+#include "matrix.hpp"
 
 const int screenWidth = 400;
 const int screenHeight = 400;
-
-struct Vec3 {
-    float buf[3];
-    Vec3(float x, float y, float z) : buf{x, y, z} {};
-
-    float& operator[](int i) {
-        return buf[i];
-    }
-
-    float operator[](int i) const {
-        return buf[i];
-    }
-};
 
 void RenderFrame(HWND hwnd, HDC hdcMem) {
     HDC hdcDest = GetDC(hwnd);
     BitBlt(hdcDest, 0, 0, screenWidth, screenHeight, hdcMem, 0, 0, SRCCOPY);
     ReleaseDC(hwnd, hdcDest);
-}
-
-bool InsideHalfPlane(const Vec3& v0, const Vec3& v1, const Vec3& p) {
-    return (v0[1] - v1[1]) * (p[0] - v0[0]) + (v1[0] - v0[0]) * (p[1] - v0[1]) > 0;
-}
-
-bool InsideTriangle(const Vec3& v0, const Vec3& v1, const Vec3& v2, const Vec3& p) {
-    return 
-        InsideHalfPlane(v0, v1, p) &&
-        InsideHalfPlane(v1, v2, p) &&
-        InsideHalfPlane(v2, v0, p);
 }
 
 COLORREF RGBtoBGR(COLORREF color) {
@@ -58,8 +35,8 @@ void DrawTriangle(void* bits, const Vec3& v0, const Vec3& v1, const Vec3& v2, CO
     for (int x = 0; x < width; ++x) {
         for (int y = 0; y < height; ++y) {
             Vec3 p = Vec3(((float)x + 0.5) / width, ((float)y + 0.5) / height, 0);
-            if (InsideTriangle(v0, v1, v2, p)) {
-                Vec3 b = computeBarycentric(v0, v1, v2, p);
+            Vec3 b = computeBarycentric(v0, v1, v2, p);
+            if (b[0] >= 0 && b[1] >= 0 && b[2] >= 0) {
                 COLORREF c = RGB(
                     b[0] * GetRValue(c0) + b[1] * GetRValue(c1) + b[2] * GetRValue(c2),
                     b[0] * GetGValue(c0) + b[1] * GetGValue(c1) + b[2] * GetGValue(c2),
